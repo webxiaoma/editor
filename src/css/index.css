@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+#editWarp {
+  margin: 30px;
+  width: 700px;
+  min-height: 200px;
+}
+.simple-editor-wrap {
+  width: 100%;
+  border: 1px solid #d6d6d6;
+}
+.simple-editor-wrap div,
+.simple-editor-wrap span,
+.simple-editor-wrap ul,
+.simple-editor-wrap li,
+.simple-editor-wrap a,
+.simple-editor-wrap i,
+.simple-editor-wrap button,
+.simple-editor-wrap p {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+}
+.simple-editor-wrap .simple-editor-header {
+  width: 100%;
+  min-height: 40px;
+  padding: 0px 4px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f3f3f3;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul {
+  display: flex;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul li {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul li .editor-a-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul li .editor-a-btn i {
+  color: #808080;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul li .editor-a-btn:hover {
+  background: #e9e9e9;
+}
+.simple-editor-wrap .simple-editor-header .simple-editor-ul li .editor-a-btn:hover i {
+  color: #0c0c0c;
+}
+.simple-editor-wrap .simple-editor-body {
+  outline: none;
+  min-height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+}
