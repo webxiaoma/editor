@@ -7,7 +7,15 @@ const actions = {
         name:'bold',
         icon:'fa-bold',
         show:true,
-        actions:()=>exce("bold"),
+        actions:(e)=>{
+            var result = exce("bold");
+            if(result){
+                e.classList.toggle("active")
+            }
+            return result
+
+
+        },
     },
     backColor:{
         title:'背景色',
