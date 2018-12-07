@@ -34,6 +34,11 @@ import actions from './headerActions'
           console.log(content)
     }
 
+
+    // 常用方法
+
+
+
     // 私有
     Editor.prototype.layout = function(){ // 初始化富文本框构架以及样式
         let D = document;
@@ -55,7 +60,7 @@ import actions from './headerActions'
            a.addEventListener("click",function(e){
                actionsObj.actions(this)
            })
-           a.innerHTML = `<i class="fa ${actionsObj.icon}"></i>`;
+           a.innerHTML = `<i class="iconfont ${actionsObj.icon}"></i>`;
            li.append(a)
            editorUl.append(li)
         }

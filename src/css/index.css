@@ -22,7 +22,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  list-style: none;
   text-decoration: none;
 }
 .simple-editor-wrap .simple-editor-header {
@@ -32,8 +31,13 @@
   border-bottom: 1px solid #e0e0e0;
   background: #f3f3f3;
 }
+.simple-editor-wrap .simple-editor-header ul li {
+  list-style: none;
+}
 .simple-editor-wrap .simple-editor-header .simple-editor-ul {
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
 }
 .simple-editor-wrap .simple-editor-header .simple-editor-ul li {
   position: relative;
@@ -69,4 +73,8 @@
   min-height: 100px;
   margin-top: 10px;
   padding: 10px;
+}
+.simple-editor-wrap .simple-editor-body ul,
+.simple-editor-wrap .simple-editor-body ol {
+  margin-left: 30px;
 }
