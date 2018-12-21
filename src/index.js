@@ -7,13 +7,13 @@ import initOptions from './options'
     W.Editor = function (el,options = {}){
         this.el = document.querySelector(el);
         this.options = Object.assign(initOptions,options);
+        this.range = null;
         
 
         return this.init()
     }
 
     Editor.fn = Editor.prototype = {
-
         /**
          * 初始化
          */
@@ -46,6 +46,7 @@ import initOptions from './options'
                  this.activeIcon()
 
                  var range = this.getCursor()
+                 this.range = range
                  this.options.cursorChange(range)
             })
     
@@ -112,7 +113,6 @@ import initOptions from './options'
     
     }
 
-    
     /**
      * 扩展功能
      */

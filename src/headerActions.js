@@ -2,23 +2,23 @@
 import exce from './exce'
 
 
-let getStyle = (style)=>{
+let getStyle = (style)=>{ // 设置样式
     return document.queryCommandValue(style).toString()
 }
 
-
 const actions = {
+    editorEl:'', // 实例editor
     bold:{
         title:'加粗',
-        element:null,
+        element:'',  // 存储元素
         icon:'icon-fuhao-jiacu',
         show:true,
-        active(){
+        active(){  //激活状态
            var bol = getStyle("bold")
            bol === "true"?this.element.classList.add("active")
               :this.element.classList.remove("active")
         },
-        actions(e){
+        actions(e){ // 按钮事件
             var result = exce("bold");
             this.active()
             return result
@@ -29,7 +29,17 @@ const actions = {
         element:'',
         icon:'icon-titleicon',
         show:true,
-        active(){},
+        active(){
+            var bol = getStyle("formatBlock");
+            var bolAry = bol.split("");
+            if(bolAry[0] === 'h'){
+                this.element.classList.add("active")
+            }else{
+                this.element.classList.remove("active")
+            }
+           
+            
+        },
         actions(tag){
             var result =  exce("formatBlock",tag);
             this.active()
@@ -43,7 +53,7 @@ const actions = {
                                 正文
                             </a>
                         </li>`,
-                h = this.children
+            h = this.children
             for(let i=0,len=h.length;i<len;i++){
                 liStr += `<li data-h="${h[i]}">
                             <a href="javascript:;">
@@ -53,9 +63,20 @@ const actions = {
             }
             ul.innerHTML = liStr;
             ul.addEventListener("click",(e)=>{
-                var htmlTag = e.target.innerText ==="正文"
-                                ?"<div>"
-                                :`<${e.target.innerText}>`
+                var isInt = e.target.innerText ==="正文"
+                var htmlTag = isInt?"<div>"
+                                   :`<${e.target.innerText}>`
+                
+                let liAry = this.element.parentElement.querySelectorAll("ul li")
+                
+                for(var i = 0,len=liAry.length;i<len;i++){
+                    liAry[i].querySelector('a').classList.remove("active")
+                }
+
+                if(!isInt){ // 点击的非正文时
+                    e.target.parentElement.classList.add("active")
+                }
+
                 this.actions(htmlTag)
                 el.querySelector(".simple-editor-ul-h").style.display = "none"
 
@@ -80,8 +101,59 @@ const actions = {
         element:'',
         icon:'icon-zitibeijingse',
         show:true,
-        active(){},
-        actions:()=>exce("backColor","red")
+        active(){
+           
+        },
+        actions:(color)=>exce("backColor",color),
+        hoverLeave(el,bol){
+            let div = document.createElement('div')
+            let ul = document.createElement('ul');
+            div.classList.add("simple-editor-wrap-bg")
+            ul.classList.add("simple-editor-ul-bg")
+            let liStr = '';
+            let aColor = this.children
+            for(let i=0,len=aColor.length;i<len;i++){
+            liStr += `<li>
+                        <a href="javascript:;"  data-color="${aColor[i]}" style="background-color:${aColor[i]}">
+                       
+                        </a>
+                      </li>`
+            }
+            liStr += `<li class="input-color">
+               <input type="text" maxLength="25"/>
+               <p>确定</p>
+            </li>`
+            ul.innerHTML = liStr;
+            
+            // 添加事件
+            ul.addEventListener("click",(e)=>{
+                var color = e.target.getAttribute("data-color")
+                if(color){
+                    this.actions(color)
+                    el.querySelector(".simple-editor-wrap-bg").style.display = "none"
+                }
+                // debugger
+                if(e.target.nodeName === "P"){
+                    let inpColor = el.querySelector(".input-color input").value
+                    this.actions(inpColor)
+                }
+
+            })
+
+            div.appendChild(ul)
+            el.appendChild(div)
+            el.querySelector(".simple-editor-wrap-bg").style.display = "block"
+
+            // // 添加事件
+            el.addEventListener("mouseenter",function(e){
+                el.querySelector(".simple-editor-wrap-bg").style.display = "block"
+            })
+            el.addEventListener("mouseleave",function(e){
+                el.querySelector(".simple-editor-wrap-bg").style.display = "none"
+            })
+
+        },
+        children:['#111','#354','#354','#458','#423','#987','#347','#742','#458','#423','#987','#347','#742','#235','#853','#243']
     },
     blockquote:{
         title:'引用块',
@@ -130,7 +202,7 @@ const actions = {
         show:true,
         active(){
             var bol = getStyle("italic")
-            console.log(bol)
+            // console.log(bol)
             bol === "true"?this.element.classList.add("active")
                :this.element.classList.remove("active")
           
