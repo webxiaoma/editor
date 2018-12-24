@@ -1,13 +1,6 @@
-
-import exce from './exce'
-
-
-let getStyle = (style)=>{ // 设置样式
-    return document.queryCommandValue(style).toString()
-}
+import { exce,getStyle } from './exce'
 
 const actions = {
-    editorEl:'', // 实例editor
     bold:{
         title:'加粗',
         element:'',  // 存储元素
@@ -45,7 +38,7 @@ const actions = {
             this.active()
             return result
         },
-        hoverLeave(el,bol){
+        hoverLeave(el,editor){
             let ul = document.createElement('ul');
             ul.classList.add("simple-editor-ul-h")
             let liStr = `<li data-h="">
@@ -119,10 +112,6 @@ const actions = {
                         </a>
                       </li>`
             }
-            liStr += `<li class="input-color">
-               <input type="text" maxLength="25"/>
-               <p>确定</p>
-            </li>`
             ul.innerHTML = liStr;
             
             // 添加事件
@@ -132,17 +121,12 @@ const actions = {
                     this.actions(color)
                     el.querySelector(".simple-editor-wrap-bg").style.display = "none"
                 }
-                // debugger
-                if(e.target.nodeName === "P"){
-                    let inpColor = el.querySelector(".input-color input").value
-                    this.actions(inpColor)
-                }
 
             })
 
             div.appendChild(ul)
             el.appendChild(div)
-            el.querySelector(".simple-editor-wrap-bg").style.display = "block"
+            el.querySelector(".simple-editor-wrap-bg").style.display = "none"
 
             // // 添加事件
             el.addEventListener("mouseenter",function(e){
@@ -153,39 +137,7 @@ const actions = {
             })
 
         },
-        children:['#111','#354','#354','#458','#423','#987','#347','#742','#458','#423','#987','#347','#742','#235','#853','#243']
-    },
-    blockquote:{
-        title:'引用块',
-        element:'',
-        icon:'icon-quoteleft',
-        show:true,
-        active(){},
-        actions:()=>exce("formatBlock","<blockquote>")
-    },
-    preCode:{
-        title:'代码块',
-        element:'',
-        icon:'icon-code',
-        show:true,
-        active(){},
-        actions:()=>exce("formatBlock","<pre>")
-    },
-    fontelement:{
-        title:'字体样式',
-        element:'',
-        icon:'icon-728bianjiqi_zitidaxiao',
-        show:true,
-        active(){},
-        actions:()=>exce("fontelement","Serif")
-    },
-    fontSize:{
-        title:'字体大小',
-        element:'',
-        icon:'icon-728bianjiqi_zitidaxiao',
-        show:true,
-        active(){},
-        actions:()=>exce("fontSize","18px")
+        children:['#fff','#111','#354','#354','#458','#423','#987','#347','#742','#458','#423','#987','#347','#742','#235','#853','#243']
     },
     foreColor :{
         title:'字体颜色',
@@ -193,8 +145,165 @@ const actions = {
         icon:'icon-716bianjiqi_zitiyanse',
         show:true,
         active(){},
-        actions:()=>exce("foreColor","green")
+        actions:(color)=>exce("foreColor",color),
+        hoverLeave(el,bol){
+            let div = document.createElement('div')
+            let ul = document.createElement('ul');
+            div.classList.add("simple-editor-wrap-color")
+            ul.classList.add("simple-editor-ul-bg")
+            let liStr = '';
+            let aColor = this.children
+            for(let i=0,len=aColor.length;i<len;i++){
+            liStr += `<li>
+                        <a href="javascript:;"  data-color="${aColor[i]}" style="background-color:${aColor[i]}">
+                       
+                        </a>
+                      </li>`
+            }
+            ul.innerHTML = liStr;
+            
+            // 添加事件
+            ul.addEventListener("click",(e)=>{
+                var color = e.target.getAttribute("data-color")
+                if(color){
+                    this.actions(color)
+                    el.querySelector(".simple-editor-wrap-color").style.display = "none"
+                }
+
+            })
+
+            div.appendChild(ul)
+            el.appendChild(div)
+            el.querySelector(".simple-editor-wrap-color").style.display = "none"
+
+            // // 添加事件
+            el.addEventListener("mouseenter",function(e){
+                el.querySelector(".simple-editor-wrap-color").style.display = "block"
+            })
+            el.addEventListener("mouseleave",function(e){
+                el.querySelector(".simple-editor-wrap-color").style.display = "none"
+            })
+
+        },
+        children:['#fff','#111','#354','#354','#458','#423','#987','#347','#742','#458','#423','#987','#347','#742','#235','#853','#243']
     },
+    fontelement:{
+        title:'字体样式',
+        element:'',
+        icon:'icon-728bianjiqi_zitidaxiao',
+        show:true,
+        active(){},
+        actions:(style)=>{
+            exce("fontName",style)
+        },
+        hoverLeave(el,bol){
+            let ul = document.createElement('ul');
+            ul.classList.add("simple-editor-ul-style")
+            let liStr = `<li data-h="">
+                            <a href="javascript:;">
+                                正常
+                            </a>
+                        </li>`,
+            style = this.children
+            for(let i=0,len=style.length;i<len;i++){
+                liStr += `<li data-h="${style[i]}">
+                            <a href="javascript:;">
+                               ${style[i]}
+                            </a>
+                        </li>`
+            }
+            ul.innerHTML = liStr;
+            ul.addEventListener("click",(e)=>{
+
+                var isInt = e.target.innerText ==="正常"
+                var htmlStyle = isInt?""
+                                   :`${e.target.innerText}`
+                             
+                let liAry = this.element.parentElement.querySelectorAll("ul li")
+
+                
+                for(var i = 0,len=liAry.length;i<len;i++){
+                    liAry[i].querySelector('a').classList.remove("active")
+                }
+
+                if(!isInt){ // 点击的非正常样式时
+                    e.target.classList.add("active")
+                }
+                this.actions(htmlStyle)
+                el.querySelector(".simple-editor-ul-style").style.display = "none"
+            })
+
+            el.appendChild(ul)
+
+             // 添加事件
+            el.addEventListener("mouseenter",function(e){
+                el.querySelector(".simple-editor-ul-style").style.display = "block"
+            })
+            el.addEventListener("mouseleave",function(e){
+                el.querySelector(".simple-editor-ul-style").style.display = "none"
+            })
+
+
+        },
+        children:['宋体','微软雅黑','Arial','Tahoma','Verdana']
+    },
+    fontSize:{
+        title:'字体大小',
+        element:'',
+        icon:'icon-728bianjiqi_zitidaxiao',
+        show:true,
+        active(){},
+        actions:(size)=>exce("fontSize",6),
+        hoverLeave(el,bol){
+            let ul = document.createElement('ul');
+            ul.classList.add("simple-editor-ul-size")
+            let liStr = `<li data-h="">
+                            <a href="javascript:;">
+                                正文
+                            </a>
+                        </li>`,
+            h = this.children
+            for(let i=0,len=h.length;i<len;i++){
+                liStr += `<li data-h="${h[i]}">
+                            <a href="javascript:;" style="font-size:${h[i]};">
+                               <span style="font-size:${h[i]};">${h[i]}</span>
+                            </a>
+                        </li>`
+            }
+            ul.innerHTML = liStr;
+            ul.addEventListener("click",(e)=>{
+                var isInt = e.target.innerText ==="正文"
+                var sizeTag = isInt?"<div>"
+                                   :`'${e.target.innerText}'`
+                
+                let liAry = this.element.parentElement.querySelectorAll("ul li")
+                
+                for(var i = 0,len=liAry.length;i<len;i++){
+                    liAry[i].querySelector('a').classList.remove("active")
+                }
+                if(!isInt){ // 点击的非正文时
+                    e.target.parentElement.classList.add("active")
+                }
+                this.actions(sizeTag)
+                el.querySelector(".simple-editor-ul-size").style.display = "none"
+
+            })
+
+            el.appendChild(ul)
+
+             // 添加事件
+            el.addEventListener("mouseenter",function(e){
+                el.querySelector(".simple-editor-ul-size").style.display = "block"
+            })
+            el.addEventListener("mouseleave",function(e){
+                el.querySelector(".simple-editor-ul-size").style.display = "none"
+            })
+
+
+        },
+        children:['12px','14px','18px','26px','32px']
+    },
+   
     italic:{
         title:'斜体',
         element:'',
@@ -234,6 +343,31 @@ const actions = {
           
         },
         actions:()=>exce("Strikethrough")
+    },
+    blockquote:{
+        title:'引用块',
+        element:'',
+        icon:'icon-quoteleft',
+        show:true,
+        active(){
+            var bol = getStyle("formatBlock")
+            console.log(bol)
+            bol === "blockquote"?this.element.classList.add("active")
+               :this.element.classList.remove("active")
+        },
+        actions:()=>{
+           var bol = getStyle("formatBlock")
+           var tag = bol === "blockquote"?"<p>":"<blockquote>"
+           return exce("formatBlock",tag)
+        }
+    },
+    preCode:{
+        title:'代码块',
+        element:'',
+        icon:'icon-code',
+        show:true,
+        active(){},
+        actions:()=>exce("formatBlock","<pre>")
     },
     justifyLeft:{
         title:'左对齐',
@@ -336,7 +470,88 @@ const actions = {
         icon:'icon-link',
         show:true,
         active(){},
-        actions:()=>exce("createLink","https://webxiaoma.com")
+        actions:(title,url,isBank,range)=>{
+            let a = `<a  href="${url}" target="${isBank?'_blank':'_self'}">${title}</a>`
+            let result = exce('inserthtml',a)
+            return result
+        },
+        deleteLink(range){
+            console.log(range.startContainer.parentNode)
+            let result = exce('formatBlock',"<p>")
+            return result
+        },
+        hoverLeave(el,editor){
+            let div = document.createElement('div');
+            div.classList.add("simple-editor-link")
+            let linkStr = `<div class="simple-editor-wrap">
+                            <div class="simple-editor-link-header">添加超链接</div>
+                            <div class="simple-editor-link-text"><input type="text" placeholder="超链接标题"/></div>
+                            <div class="simple-editor-link-links"><input type="text" placeholder="超链接地址"/></div>
+                            <div>是否打开新窗口：<input type="checkbox"/></div>
+                            <div class="simple-editor-link-btn">
+                                 <span class="inset">插入</span>
+                                 <span class="delete">删除</span>
+                            </div>
+                         </div>`
+           
+            // ul.addEventListener("click",(e)=>{
+            //     var isInt = e.target.innerText ==="正文"
+            //     var sizeTag = isInt?"<div>"
+            //                        :`'${e.target.innerText}'`
+                
+            //     let liAry = this.element.parentElement.querySelectorAll("ul li")
+                
+            //     for(var i = 0,len=liAry.length;i<len;i++){
+            //         liAry[i].querySelector('a').classList.remove("active")
+            //     }
+            //     if(!isInt){ // 点击的非正文时
+            //         e.target.parentElement.classList.add("active")
+            //     }
+            //     this.actions(sizeTag)
+            //     
+
+            // })
+            div.addEventListener("click",(e)=>{
+                let text = e.target.innerText 
+
+                if(text === "插入"){
+                    var textInp = el.querySelector('.simple-editor-link-text input').value
+                    var linkInp = el.querySelector('.simple-editor-link-links input').value
+            
+                    // if(textInp&&linkInp){
+                        let range = editor.focusResetRange()
+                        this.actions(textInp,linkInp,true,range)
+                    // }
+
+                }
+
+                if(text === "删除"){
+                    let range = editor.focusResetRange()
+                    this.deleteLink(range)
+                }
+
+            })
+
+
+            
+            div.innerHTML = linkStr;
+            // el.querySelector(".simple-editor-ul-size").style.display = "none"
+            el.appendChild(div)
+
+             // 添加事件
+            el.addEventListener("mouseenter",function(e){
+                el.querySelector(".simple-editor-link").style.display = "block"
+            })
+            el.addEventListener("mouseleave",function(e){
+                // el.querySelector(".simple-editor-link").style.display = "none"
+            })
+            
+
+
+
+
+
+        }
     },
     inserHorizontalRule:{
         title:'分割线',

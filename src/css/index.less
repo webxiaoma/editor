@@ -81,6 +81,8 @@
                         padding:4px 0;
                         a{
                             display: block;
+                            width:100%;
+                            height:100%;
                             text-align: center;
                             color:#333;
                         }
@@ -103,7 +105,6 @@
                 // 背景颜色
                 .simple-editor-wrap-bg{
                     display: none;
-                    // height:auto;
                     padding:5px;
                     position: absolute;
                     z-index: 999;
@@ -120,6 +121,7 @@
                             width:16px;
                             height:16px;
                             margin:0 2px;
+                            border:1px solid #eee;
                             a{
                                 display: block;
                                 width:100%;
@@ -155,6 +157,81 @@
                         }
                     }
 
+                }
+                // 字体颜色
+                .simple-editor-wrap-color{
+                    .simple-editor-wrap-bg;
+                }
+
+                // 字体样式
+                .simple-editor-ul-style{
+                    .simple-editor-ul-h;
+                }
+
+                // 字体大小
+                .simple-editor-ul-size{
+                    .simple-editor-ul-h;
+                }
+                // 超链接
+                .simple-editor-link{
+                    width:300px;
+                    padding:10px;
+                    position: absolute;
+                    z-index: 999;
+                    top:38px;
+                    left:-45px;
+                    background:#fff;
+                    border:1px solid rgb(214, 214, 214);
+                    .simple-editor-wrap{
+                        border:none;
+                        color:#333;
+                        .simple-editor-link-header{
+                            font-size:16px;
+                            border-bottom:1px solid #eee;
+                            padding:4px;
+
+                        }
+                        .simple-editor-link-text{
+                             width:100%;
+                             height:20px;
+                             margin:20px 0;
+                             input{
+                                width:100%;
+                                height:100%;
+                                border:none;
+                                outline: none;
+                                border-bottom:1px solid #ccc;
+                             }
+                        }
+                        .simple-editor-link-links{
+                            .simple-editor-link-text;
+                        }
+                        .simple-editor-link-btn{
+                           display:flex;
+                           justify-content: center;
+                           margin-top:30px;
+                           span{
+                                cursor: pointer;
+                                padding:5px 10px;
+                                margin-left:5px;
+                                border:1px solid #409eff;
+                                background:#409eff;
+                                border-radius:4px;
+                                color:#fff;
+                                font-size:14px;
+                                &:active{
+                                    background:#278ff8;
+                                }
+                           }
+                           .delete{
+                                border:1px solid #f35050;
+                                background:#f35050;
+                                &:active{
+                                    background:#f03a3a;
+                                }
+                           }
+                        }
+                    }
                 }
                
              }

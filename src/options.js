@@ -9,6 +9,6 @@ export default {
     },
     // 光标事件
     cursorChange:function(range){
-        console.log(range)
+        // console.log(range)
     }
 }

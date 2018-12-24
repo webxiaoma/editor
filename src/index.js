@@ -1,4 +1,5 @@
 import './css/index.less'
+import {exce} from './exce'
 import {actions,actionsKeys} from './headerActions'
 import initOptions from './options'
 
@@ -7,8 +8,7 @@ import initOptions from './options'
     W.Editor = function (el,options = {}){
         this.el = document.querySelector(el);
         this.options = Object.assign(initOptions,options);
-        this.range = null;
-        
+        this.blurRange = null;
 
         return this.init()
     }
@@ -46,8 +46,24 @@ import initOptions from './options'
                  this.activeIcon()
 
                  var range = this.getCursor()
-                 this.range = range
                  this.options.cursorChange(range)
+            })
+
+            // 监听回车事件
+            this.el.querySelector(".simple-editor-body").addEventListener("keyup",(e)=>{
+
+                  // 回车时触发
+                if(e.keyCode == 13&&this.getCursor().commonAncestorContainer.localName === "blockquote"){
+
+                    this.changeTag("p")
+                }
+           })
+
+            // 富文本blur事件
+            this.el.querySelector(".simple-editor-body").addEventListener("blur",(e)=>{
+                 // 头部active
+                 this.blurRange = this.getCursor()
+                 console.log(this.blurRange)
             })
     
             return this
@@ -77,11 +93,11 @@ import initOptions from './options'
                
 
                if(actionsObj.hoverLeave){
-                 actionsObj.hoverLeave(li)
+                 actionsObj.hoverLeave(li,this)
                }
 
                a.addEventListener("click",function(e){
-                   if(!actionsObj.children){
+                   if(!actionsObj.hoverLeave){
                      actionsObj.actions(this)
                    }
                })
@@ -142,6 +158,35 @@ import initOptions from './options'
                 actions[actionsKeys[i]].active()
             }
 
+        },
+        changeTag(tag){ // 改变标签
+            exce("formatBlock",tag)
+        },
+        focusResetRange(){ // 获取焦点
+            this.el.querySelector(".simple-editor-body").focus()
+            let range = this.blurRange
+            this.resetRange(
+                    range.startContainer,
+                    range.startOffset,
+                    range.endContainer,
+                    range.endOffset
+            )
+
+            return range
+             
+        },
+        resetRange(startContainer,startOffset,endContainer,endOffset){ // 定位光标
+            let selection  =  window.getSelection();
+
+            selection.removeAllRanges();
+        
+            let range  =  document.createRange();
+            
+            range.setStart(startContainer,startOffset);
+            
+            range.setEnd(endContainer,endOffset);
+            
+            selection.addRange(range);
         }
         
     })
@@ -225,4 +270,5 @@ let editorBar = new Editor("#editWarp",{
 })
 
 
-console.log(editorBar)
+
+
