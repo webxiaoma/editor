@@ -33,8 +33,9 @@ import initOptions from './options'
             // 富文本input事件
             this.el.querySelector(".simple-editor-body").addEventListener("input",(e)=>{
                 //  this.onchange(e.target.innerHTML)
-                 // 头部active
-                 this.activeIcon()
+
+                var range = this.getCursor()
+                 this.activeIcon(range) // 头部active 样式激活
                  this.options.onchange(e.target.innerHTML)
             })
     
@@ -42,10 +43,12 @@ import initOptions from './options'
             // 光标变化事件
             this.el.querySelector(".simple-editor-body").addEventListener("click",()=>{
                  
-                 // 头部active
-                 this.activeIcon()
+                
 
                  var range = this.getCursor()
+
+                 
+                 this.activeIcon(range) // 头部active 样式激活
                  this.options.cursorChange(range)
             })
 
@@ -63,7 +66,6 @@ import initOptions from './options'
             this.el.querySelector(".simple-editor-body").addEventListener("blur",(e)=>{
                  // 头部active
                  this.blurRange = this.getCursor()
-                 console.log(this.blurRange)
             })
     
             return this
@@ -141,35 +143,25 @@ import initOptions from './options'
         },
 
         // 头部样式激活
-        activeIcon(){
-            // console.log("加粗" +document.queryCommandValue("bold"))
-            // console.log("背景色" +document.queryCommandValue("backColor"))
-            // console.log("字体颜色" +document.queryCommandValue("foreColor"))
-            // console.log("斜体" +document.queryCommandValue("italic"))
-            // console.log("删除线" +document.queryCommandValue("Strikethrough"))
-            // console.log("左对齐" +document.queryCommandValue("justifyLeft"))
-            // console.log("居中" +document.queryCommandValue("justifyCenter"))
-            // console.log("右对齐" +document.queryCommandValue("justifyRight"))
-            // console.log("下划线" + document.queryCommandValue("underline"))
-            // console.log("有序列表" +document.queryCommandValue("insertOrderedList"))
-            // console.log("无序列表" +document.queryCommandValue("insertUnorderedList"))
+        activeIcon(range){
             let keyAryLength = actionsKeys.length
             for(let i=0;i<keyAryLength;i++){
-                actions[actionsKeys[i]].active()
+                actions[actionsKeys[i]].active(range)
             }
 
         },
         changeTag(tag){ // 改变标签
             exce("formatBlock",tag)
         },
-        focusResetRange(){ // 获取焦点
+        focusResetRange(startContainer,startOffset,endContainer,endOffset){ // 获取焦点后定位光标
             this.el.querySelector(".simple-editor-body").focus()
             let range = this.blurRange
+            var startContainer = startContainer || range.startContainer,
+            startOffset = startOffset || range.startOffset,
+            endContainer = endContainer || range.endContainer,
+            endOffset =  endOffset|| range.endOffset;
             this.resetRange(
-                    range.startContainer,
-                    range.startOffset,
-                    range.endContainer,
-                    range.endOffset
+                startContainer,startOffset,endContainer,endOffset
             )
 
             return range

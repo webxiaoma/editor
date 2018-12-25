@@ -351,7 +351,6 @@ const actions = {
         show:true,
         active(){
             var bol = getStyle("formatBlock")
-            console.log(bol)
             bol === "blockquote"?this.element.classList.add("active")
                :this.element.classList.remove("active")
         },
@@ -469,60 +468,60 @@ const actions = {
         element:'',
         icon:'icon-link',
         show:true,
-        active(){},
+        active(range){
+            if(range.commonAncestorContainer.parentNode.nodeName === 'A'){
+                this.element.classList.add("active")
+            }else{
+                this.element.classList.remove("active")
+            }
+        },
         actions:(title,url,isBank,range)=>{
-            let a = `<a  href="${url}" target="${isBank?'_blank':'_self'}">${title}</a>`
+           
+            // 判断光标是否在a标签中，如果是则执行替换
+            if(range.commonAncestorContainer.parentNode.nodeName === 'A'){
+                range.commonAncestorContainer.parentNode.parentNode.removeChild(range.commonAncestorContainer.parentNode)
+            }
+            let a = `<a  href="${url}" target="_blank">${title}</a>`
             let result = exce('inserthtml',a)
+
             return result
         },
         deleteLink(range){
-            console.log(range.startContainer.parentNode)
-            let result = exce('formatBlock',"<p>")
-            return result
+            if(range.startContainer.parentNode.nodeName === 'A'){
+                var oldnode = range.startContainer.parentNode;
+                var newnode;
+                oldnode.parentNode.className === 'simple-editor-body'
+                ?newnode = document.createElement("p")
+                :newnode = document.createElement("span")
+                newnode.innerHTML = oldnode.innerHTML;
+                oldnode.parentNode.replaceChild(newnode,oldnode);
+            }
+         
         },
         hoverLeave(el,editor){
             let div = document.createElement('div');
             div.classList.add("simple-editor-link")
             let linkStr = `<div class="simple-editor-wrap">
-                            <div class="simple-editor-link-header">添加超链接</div>
-                            <div class="simple-editor-link-text"><input type="text" placeholder="超链接标题"/></div>
-                            <div class="simple-editor-link-links"><input type="text" placeholder="超链接地址"/></div>
-                            <div>是否打开新窗口：<input type="checkbox"/></div>
-                            <div class="simple-editor-link-btn">
-                                 <span class="inset">插入</span>
-                                 <span class="delete">删除</span>
-                            </div>
-                         </div>`
+                                <div class="simple-editor-link-header">添加超链接</div>
+                                <div class="simple-editor-link-text"><input type="text" placeholder="超链接标题"/></div>
+                                <div class="simple-editor-link-links"><input type="text" placeholder="超链接地址"/></div>
+                                <div class="simple-editor-link-btn">
+                                    <span class="inset">插入</span>
+                                    <span class="delete">删除</span>
+                                </div>
+                            </div>`
            
-            // ul.addEventListener("click",(e)=>{
-            //     var isInt = e.target.innerText ==="正文"
-            //     var sizeTag = isInt?"<div>"
-            //                        :`'${e.target.innerText}'`
-                
-            //     let liAry = this.element.parentElement.querySelectorAll("ul li")
-                
-            //     for(var i = 0,len=liAry.length;i<len;i++){
-            //         liAry[i].querySelector('a').classList.remove("active")
-            //     }
-            //     if(!isInt){ // 点击的非正文时
-            //         e.target.parentElement.classList.add("active")
-            //     }
-            //     this.actions(sizeTag)
-            //     
-
-            // })
-            div.addEventListener("click",(e)=>{
+            div.addEventListener("click",(e)=>{ // 点击超链接时
+                e.stopPropagation();
                 let text = e.target.innerText 
 
                 if(text === "插入"){
                     var textInp = el.querySelector('.simple-editor-link-text input').value
                     var linkInp = el.querySelector('.simple-editor-link-links input').value
-            
-                    // if(textInp&&linkInp){
+                    if(textInp&&linkInp){
                         let range = editor.focusResetRange()
                         this.actions(textInp,linkInp,true,range)
-                    // }
-
+                    }
                 }
 
                 if(text === "删除"){
@@ -532,25 +531,46 @@ const actions = {
 
             })
 
-
             
             div.innerHTML = linkStr;
-            // el.querySelector(".simple-editor-ul-size").style.display = "none"
             el.appendChild(div)
+            el.querySelector(".simple-editor-link").style.display = "none"
+
 
              // 添加事件
-            el.addEventListener("mouseenter",function(e){
+            el.addEventListener("click",function(e){
+                let range = editor.focusResetRange(),
+                    inpTitle = "",
+                    inpLink;
+               
+                // 获取选择区域的文本
+                if(range.collapsed){ 
+                    if(range.commonAncestorContainer.parentNode.nodeName === 'A'){ // 判断父节点是否是A标签
+                        inpTitle = range.commonAncestorContainer.nodeValue
+                        inpLink = range.commonAncestorContainer.parentNode.href
+                    }else{
+                        inpTitle =  ""
+                        inpLink = ""
+                    }
+                }else{ // 有蓝拖时
+                    inpTitle =  window.getSelection().toString()
+                    if(range.commonAncestorContainer.parentNode.nodeName === 'A'){
+                        inpLink = range.commonAncestorContainer.parentNode.href
+                    }else{
+                        inpLink = ""
+                    }
+                }
+
+                // 初始化输入框内容
+                el.querySelector('.simple-editor-link-text input').value = inpTitle
+                el.querySelector('.simple-editor-link-links input').value = inpLink
+
                 el.querySelector(".simple-editor-link").style.display = "block"
             })
             el.addEventListener("mouseleave",function(e){
-                // el.querySelector(".simple-editor-link").style.display = "none"
+                el.querySelector(".simple-editor-link").style.display = "none"
             })
             
-
-
-
-
-
         }
     },
     inserHorizontalRule:{

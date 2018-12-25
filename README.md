@@ -11,3 +11,12 @@
 
 
 4. 当我们调用 `document.execCommand("insertUnorderedList", false, null)` 来插入一个列表的时候，新的列表会被插入<p>标签中。[解决](https://www.jianshu.com/p/5997a90aab64)
+
+
+
+5. js 获取光标选中区域的文字[解决](https://blog.csdn.net/whereismatrix/article/details/51367455)
+
+
+6. 超链接的问题
+
+7. 添加样式和字体时会插入`font` 标签问题
