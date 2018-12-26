@@ -145,8 +145,47 @@ const actions = {
         icon:'icon-716bianjiqi_zitiyanse',
         show:true,
         active(){},
-        actions:(color)=>exce("foreColor",color),
-        hoverLeave(el,bol){
+        actions:(color,editor)=>{
+            var result =  exce("foreColor",color)
+            var range = editor.getCursor()
+            var cloneRange = range.cloneRange();
+            console.log(cloneRange)
+
+            // var fontTagReg =  /(\<|\<\/)(font)/ig
+            // var colorStyleReg = /color=(\"|\')[#\w]+(\"|\')/ig
+            // if(cloneRange.commonAncestorContainer.parentNode.nodeName === 'FONT'){
+            //     var oldnode = cloneRange.commonAncestorContainer.parentNode;
+            //     var newNode = document.createElement("span")
+            //     newNode.style.color = color
+            //     newNode.innerHTML = oldnode.innerHTML;
+            //     oldnode.parentNode.replaceChild(newNode,oldnode);
+            // }else{
+            //     if(cloneRange.commonAncestorContainer.nodeName === 'FONT'){
+            //         var oldnode = cloneRange.commonAncestorContainer;
+            //         var newNode = document.createElement("span")
+            //         newNode.style.color = color
+            //         newNode.innerHTML = cloneRange.commonAncestorContainer.innerHTML;
+            //         oldnode.parentNode.replaceChild(newNode,oldnode);
+            //     }else{
+            //         var selectHTML = cloneRange.commonAncestorContainer.innerHTML
+            //         var newHTML = selectHTML.replace(fontTagReg,"$1span").replace(colorStyleReg,`style="color:${color}"`)
+            //         cloneRange.commonAncestorContainer.innerHTML = newHTML
+            //     }
+            // }
+            editor.restoreRange()
+           
+            // editor.resetRange(
+            //     cloneRange.startContainer,
+            //     cloneRange.startOffset,
+            //     cloneRange.endContainer,
+            //     cloneRange.endOffset
+            // )
+
+          
+        },
+        hoverLeave(el,editor){
+
+
             let div = document.createElement('div')
             let ul = document.createElement('ul');
             div.classList.add("simple-editor-wrap-color")
@@ -161,12 +200,12 @@ const actions = {
                       </li>`
             }
             ul.innerHTML = liStr;
-            
             // 添加事件
             ul.addEventListener("click",(e)=>{
+               
                 var color = e.target.getAttribute("data-color")
                 if(color){
-                    this.actions(color)
+                    this.actions(color,editor)
                     el.querySelector(".simple-editor-wrap-color").style.display = "none"
                 }
 
@@ -175,7 +214,7 @@ const actions = {
             div.appendChild(ul)
             el.appendChild(div)
             el.querySelector(".simple-editor-wrap-color").style.display = "none"
-
+           console.log()
             // // 添加事件
             el.addEventListener("mouseenter",function(e){
                 el.querySelector(".simple-editor-wrap-color").style.display = "block"
@@ -475,26 +514,26 @@ const actions = {
                 this.element.classList.remove("active")
             }
         },
-        actions:(title,url,isBank,range)=>{
-           
+        actions:(title,url,isBank,range,editor)=>{
             // 判断光标是否在a标签中，如果是则执行替换
             if(range.commonAncestorContainer.parentNode.nodeName === 'A'){
                 range.commonAncestorContainer.parentNode.parentNode.removeChild(range.commonAncestorContainer.parentNode)
             }
-            let a = `<a  href="${url}" target="_blank">${title}</a>`
-            let result = exce('inserthtml',a)
 
+            let a = `<a  href="${url}" target="_blank">${title}</a>`
+
+            let result = exce('inserthtml',a)
             return result
         },
         deleteLink(range){
             if(range.startContainer.parentNode.nodeName === 'A'){
                 var oldnode = range.startContainer.parentNode;
-                var newnode;
+                var newNode;
                 oldnode.parentNode.className === 'simple-editor-body'
-                ?newnode = document.createElement("p")
-                :newnode = document.createElement("span")
-                newnode.innerHTML = oldnode.innerHTML;
-                oldnode.parentNode.replaceChild(newnode,oldnode);
+                ?newNode = document.createElement("p")
+                :newNode = document.createElement("span")
+                newNode.innerHTML = oldnode.innerHTML;
+                oldnode.parentNode.replaceChild(newNode,oldnode);
             }
          
         },
@@ -519,13 +558,14 @@ const actions = {
                     var textInp = el.querySelector('.simple-editor-link-text input').value
                     var linkInp = el.querySelector('.simple-editor-link-links input').value
                     if(textInp&&linkInp){
-                        let range = editor.focusResetRange()
-                        this.actions(textInp,linkInp,true,range)
+                        editor.restoreRange()
+                        let range = editor.getCursor()
+                        this.actions(textInp,linkInp,true,range,editor)
                     }
                 }
 
                 if(text === "删除"){
-                    let range = editor.focusResetRange()
+                    let range = editor.getCursor()
                     this.deleteLink(range)
                 }
 
@@ -539,7 +579,7 @@ const actions = {
 
              // 添加事件
             el.addEventListener("click",function(e){
-                let range = editor.focusResetRange(),
+                let range = editor.getCursor(),
                     inpTitle = "",
                     inpLink;
                

@@ -8,7 +8,7 @@ import initOptions from './options'
     W.Editor = function (el,options = {}){
         this.el = document.querySelector(el);
         this.options = Object.assign(initOptions,options);
-        this.blurRange = null;
+        this.currentRange = null;
 
         return this.init()
     }
@@ -34,7 +34,7 @@ import initOptions from './options'
             this.el.querySelector(".simple-editor-body").addEventListener("input",(e)=>{
                 //  this.onchange(e.target.innerHTML)
 
-                var range = this.getCursor()
+                 var range = this.getCursor()
                  this.activeIcon(range) // 头部active 样式激活
                  this.options.onchange(e.target.innerHTML)
             })
@@ -42,22 +42,17 @@ import initOptions from './options'
     
             // 光标变化事件
             this.el.querySelector(".simple-editor-body").addEventListener("click",()=>{
-                 
-                
-
-                 var range = this.getCursor()
-
-                 
-                 this.activeIcon(range) // 头部active 样式激活
-                 this.options.cursorChange(range)
+                 this.saveRange()// 保存光标状态
+                 this.activeIcon(this.currentRange) // 头部active 样式激活
+                 this.options.cursorChange(this.currentRange)
             })
 
             // 监听回车事件
             this.el.querySelector(".simple-editor-body").addEventListener("keyup",(e)=>{
 
+                this.saveRange() // 保存光标状态
                   // 回车时触发
                 if(e.keyCode == 13&&this.getCursor().commonAncestorContainer.localName === "blockquote"){
-
                     this.changeTag("p")
                 }
            })
@@ -65,7 +60,8 @@ import initOptions from './options'
             // 富文本blur事件
             this.el.querySelector(".simple-editor-body").addEventListener("blur",(e)=>{
                  // 头部active
-                 this.blurRange = this.getCursor()
+                 this.saveRange()
+                 this.activeIcon(this.currentRange)
             })
     
             return this
@@ -135,52 +131,39 @@ import initOptions from './options'
      * 扩展功能
      */
     Editor.fn.extends({
-        // 获取光标对象
-        getCursor(){
-            let  selection = window.getSelection();
-            let range = selection.getRangeAt(0);
-            return range
-        },
-
-        // 头部样式激活
-        activeIcon(range){
+        activeIcon(range){ // 头部样式激活
             let keyAryLength = actionsKeys.length
             for(let i=0;i<keyAryLength;i++){
                 actions[actionsKeys[i]].active(range)
             }
-
         },
         changeTag(tag){ // 改变标签
             exce("formatBlock",tag)
         },
-        focusResetRange(startContainer,startOffset,endContainer,endOffset){ // 获取焦点后定位光标
+        focusResetRange(){ // 获取焦点
             this.el.querySelector(".simple-editor-body").focus()
-            let range = this.blurRange
-            var startContainer = startContainer || range.startContainer,
-            startOffset = startOffset || range.startOffset,
-            endContainer = endContainer || range.endContainer,
-            endOffset =  endOffset|| range.endOffset;
-            this.resetRange(
-                startContainer,startOffset,endContainer,endOffset
-            )
-
-            return range
              
         },
-        resetRange(startContainer,startOffset,endContainer,endOffset){ // 定位光标
+        getCursor(){// 获取光标对象
+            let  selection = window.getSelection();
+            let range;
+            if (selection.getRangeAt && selection.rangeCount) {
+                range = selection.getRangeAt(0);
+            } else {
+                range = window.createRange();
+            }
+            return range
+        },
+        saveRange() {// 保存光标选区
+            this.currentRange = this.getCursor();
+            console.log(this.currentRange)
+        },
+        restoreRange(){ // 恢复光标选区
+            console.log(this.currentRange)
             let selection  =  window.getSelection();
-
             selection.removeAllRanges();
-        
-            let range  =  document.createRange();
-            
-            range.setStart(startContainer,startOffset);
-            
-            range.setEnd(endContainer,endOffset);
-            
-            selection.addRange(range);
+            selection.addRange(this.currentRange);
         }
-        
     })
 
 
