@@ -244,6 +244,18 @@ let editorBar = new Editor("#editWarp",{
                 
 })
 
+function fun(){
+
+}
+
+fun.prototype = Object.assign(fun.prototype,{
+    test:function(){
+        console.log(111)
+    }
+})
+
+var obj = new fun()
+console.dir(obj)
 
 
 
