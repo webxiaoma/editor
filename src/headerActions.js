@@ -45,7 +45,7 @@ const actions = {
                             <a href="javascript:;">
                                 正文
                             </a>
-                        </li>`,
+                         </li>`,
             h = this.children
             for(let i=0,len=h.length;i<len;i++){
                 liStr += `<li data-h="${h[i]}">

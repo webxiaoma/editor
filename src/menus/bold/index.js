@@ -13,7 +13,4 @@ Bold.prototype = Object.assign(Bold.prototype,{
 
 
 
-
-
-
 export default Bold
