@@ -24,6 +24,7 @@ API.prototype = {
     saveRange: function (_range) {
         if (_range) {
             // 保存已有选区
+            
             this._currentRange = _range
             return
         }

@@ -6,12 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="//at.alicdn.com/t/font_953649_uoxzy91ran.css" rel="stylesheet">
     <title>test</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 </head>
 <body>
     <div id="editWarp">
         <div class="simple-editor-wrap">
           <div class="simple-editor-header">
-              <!-- <ul class="simple-editor-ul">
+              <ul class="simple-editor-ul">
                   <li>
                       <a href="javascript :;" class="editor-a-btn" title="复制">
                         <i class="fa fa-clipboard"></i>
@@ -22,12 +23,12 @@
                             <i class="fa fa-clipboard"></i>
                         </a>
                     </li>
-                    <li>
+                    <li class="ddd">
                         <a class="editor-a-btn" title="复制">
                             <i class="fa fa-clipboard"></i>
                         </a>
                     </li>
-              </ul> -->
+              </ul>
                 <!-- <span class="editor-span-btn" title="加粗">
                     <i class="fa fa-bold"></i>
                 </span>
@@ -64,7 +65,10 @@
 
 <div>asdasdfasd</div>
     <script>
-    
+         var test = $(".ddd")
+
+         console.log(test.siblings())
+         console.log(test)
           
     
     </script>
